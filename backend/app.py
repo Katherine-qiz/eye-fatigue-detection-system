@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file, render_template
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import cv2
 import numpy as np
@@ -6,11 +6,15 @@ import base64
 import json
 import csv
 import os
+from pathlib import Path
 from datetime import datetime
 import threading
 import time
 from collections import deque
 import mediapipe as mp
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+FRONTEND_DIR = BASE_DIR / "frontend"
 
 app = Flask(__name__)
 # 仅保留基础CORS配置，无需SocketIO
@@ -608,7 +612,7 @@ def get_alerts():
 # 前端展示页面路由
 @app.route('/')
 def index():
-    return send_file('index5.html')
+    return send_file(FRONTEND_DIR / "index.html")
 
 
 @app.route('/api/analyze', methods=['POST'])
@@ -733,11 +737,11 @@ def calibrate():
 
 @app.route('/index4')
 def serve_index4():
-    return send_file('index4.html')
+    return send_file(FRONTEND_DIR / "index.html")
 
 @app.route('/index5')
 def serve_index5():
-    return send_file('index5.html')
+    return send_file(FRONTEND_DIR / "index.html")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=18008, debug=False, threaded=True)

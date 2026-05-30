@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Data and logs
+*.csv
+*.log
+data/*.csv
+logs/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Secrets
+.env
+config.json
+
+# Large files
+*.mp4
+*.mov
+*.avi

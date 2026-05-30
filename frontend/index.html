@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,38 +11,50 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
             padding: 20px;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             background-color: white;
             padding: 20px;
             border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
             font-size: 24px;
             margin-bottom: 20px;
             color: #333;
         }
+
         .video-container {
             display: flex;
             gap: 20px;
             margin-bottom: 20px;
         }
+
         .video-section {
             flex: 1;
         }
+
         .video-label {
             font-size: 14px;
             color: #666;
             margin-bottom: 5px;
         }
-        #video, #processedVideo {
+
+        .video-label.error {
+            color: #dc3545;
+        }
+
+        #video,
+        #processedVideo {
             width: 100%;
             max-width: 640px;
             height: 480px;
@@ -50,9 +63,11 @@
             background-color: #000;
             object-fit: contain;
         }
+
         .controls {
             margin: 20px 0;
         }
+
         button {
             padding: 10px 20px;
             margin-right: 10px;
@@ -63,41 +78,50 @@
             cursor: pointer;
             font-size: 14px;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
         button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
+
         .stat-card {
             padding: 15px;
             background-color: #f8f9fa;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+
         .stat-label {
             font-size: 12px;
             color: #666;
             margin-bottom: 5px;
         }
+
         .stat-value {
             font-size: 24px;
             font-weight: bold;
             color: #333;
         }
+
         .stat-value.warning {
             color: #dc3545;
         }
+
         .stat-value.good {
             color: #28a745;
         }
+
         .alert-box {
             padding: 15px;
             margin-bottom: 20px;
@@ -106,18 +130,22 @@
             border-radius: 4px;
             display: none;
         }
+
         .alert-box.show {
             display: block;
         }
+
         .alert-message {
             font-size: 16px;
             color: #856404;
         }
+
         .logs-section {
             margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid #ddd;
         }
+
         .log-item {
             padding: 10px;
             background-color: #f8f9fa;
@@ -128,6 +156,7 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .status {
             display: inline-block;
             padding: 5px 10px;
@@ -135,14 +164,17 @@
             font-size: 12px;
             margin-bottom: 20px;
         }
+
         .status.running {
             background-color: #d4edda;
             color: #155724;
         }
+
         .status.stopped {
             background-color: #f8d7da;
             color: #721c24;
         }
+
         .progress-bar {
             width: 100%;
             height: 6px;
@@ -151,6 +183,7 @@
             margin-top: 5px;
             overflow: hidden;
         }
+
         .progress-fill {
             height: 100%;
             background-color: #28a745;
@@ -158,6 +191,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>视疲劳监测系统</h1>
@@ -169,8 +203,9 @@
                 <canvas id="canvas" style="display:none;"></canvas>
             </div>
             <div class="video-section">
-                <div class="video-label"></div>
-                <img id="processedVideo" alt="处理后画面">
+                <div class="video-label" id="processedLabel">处理后画面</div>
+                <img id="processedVideo" alt="处理后画面"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==">
             </div>
         </div>
         <div class="controls">
@@ -230,17 +265,30 @@
         </div>
     </div>
     <audio id="alertSound" style="display:none;">
-        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUKfk77RiGwU7k9r0yoUrBSd4yPLaizsKElyx6+ypWRQLR6Hh8r9vIAUsgs/y2Ik3CBlou+zmnU4MDlCn5PC0YhsFO5Pa9MqFKwUnecrz2os7ChJcsevtqVkVC0eh4fK/byAFLILP8tiJNwgZaLvs5p1ODA5Qp+TwtGIbBTuT2vTKhSsFJ3nK89qLOwoSXLHr7alZFQtHoeHyv28gBSyCz/LYiTcIGWi77OadTgwOUKfk8LRiGwU7k9r0yoUrBSd5yvPaizsKElyx6+2pWRULR6Hh8r9vIAUsgs/y2Ik3CBlou+zmnU4MDlCn5PC0YhsFO5Pa9MqFKwUnecrz2os7ChJcsevtqVkVC0eh4fK/byAFLILP8tiJNwgZaLvs5p1ODA5Qp+TwtGIbBTuT2vTKhSsFJ3nK89qLOwoSXLHr7alZFQtHoeHyv28gBSyCz/LYiTcIGWi77OadTgwOUKfk8LRiGwU7k9r0yoUrBSd5yvPaizsKElyx6+2pWRULR6Hh8r9vIAUsgs/y2Ik3CBlou+zmnU4MDlCn5PC0YhsFO5Pa9MqFKwUnecrz2os7ChJcsevtqVkVC0eh4fK/byAFLILP8tiJNwgZaLvs5p1ODA5Qp+TwtGIbBTuT2vTKhSsFJ3nK89qLOwoSXLHr7alZFQtHoeHyv28gBSyCz/LYiTcIGWi77OadTgwOUKfk8LRiGwU7k9r0yoUrBSd5yvPaizsKElyx6+2pWRULR6Hh8r9vIAUsgs/y2Ik3CBlou+zmnU4MDlCn5PC0YhsFO5Pa9MqFKwUnecrz2os7ChJcsevtqVkVC0eh4fK/byAFLILP8tiJNwgZaLvs5p1ODA5Qp+TwtGIbBTuT2vTKhSsFJ3nK89qLOwoSXLHr7alZFQtHoeHyv28gBSyCz/LYiTcIGWi77OadTgwOUKfk8LRiGwU7k9r0yoUrBSd5yvPaizsKElyx6+2pWRULR6Hh8r9vIAUs" type="audio/wav">
+        <source
+            src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUKfk77RiGwU7k9r0yoUrBSd4yPLaizsKElyx6+ypWRQLR6Hh8r9vIAUsgs/y2Ik3CBlou+zmnU4MDlCn5PC0YhsFO5Pa9MqFKwUnecrz2os7ChJcsevtqVkVC0eh4fK/byAFLILP8tiJNwgZaLvs5p1ODA5Qp+TwtGIbBTuT2vTKhSsFJ3nK89qLOwoSXLHr7alZFQtHoeHyv28gBSyCz/LYiTcIGWi77OadTgwOUKfk8LRiGwU7k9r0yoUrBSd5yvPaizsKElyx6+2pWRULR6Hh8r9vIAUsgs/y2Ik3CBlou+zmnU4MDlCn5PC0YhsFO5Pa9MqFKwUnecrz2os7ChJcsevtqVkVC0eh4fK/byAFLILP8tiJNwgZaLvs5p1ODA5Qp+TwtGIbBTuT2vTKhSsFJ3nK89qLOwoSXLHr7alZFQtHoeHyv28gBSyCz/LYiTcIGWi77OadTgwOUKfk8LRiGwU7k9r0yoUrBSd5yvPaizsKElyx6+2pWRULR6Hh8r9vIAUsgs/y2Ik3CBlou+zmnU4MDlCn5PC0YhsFO5Pa9MqFKwUnecrz2os7ChJcsevtqVkVC0eh4fK/byAFLILP8tiJNwgZaLvs5p1ODA5Qp+TwtGIbBTuT2vTKhSsFJ3nK89qLOwoSXLHr7alZFQtHoeHyv28gBSyCz/LYiTcIGWi77OadTgwOUKfk8LRiGwU7k9r0yoUrBSd5yvPaizsKElyx6+2pWRULR6Hh8r9vIAUsgs/y2Ik3CBlou+zmnU4MDlCn5PC0YhsFO5Pa9MqFKwUnecrz2os7ChJcsevtqVkVC0eh4fK/byAFLILP8tiJNwgZaLvs5p1ODA5Qp+TwtGIbBTuT2vTKhSsFJ3nK89qLOwoSXLHr7alZFQtHoeHyv28gBSyCz/LYiTcIGWi77OadTgwOUKfk8LRiGwU7k9r0yoUrBSd5yvPaizsKElyx6+2pWRULR6Hh8r9vIAUs"
+            type="audio/wav">
     </audio>
     <script>
-        const API_BASE = "http://45.76.185.223:18008";
+        const BACKEND_PORT = '18008';
+        const EMPTY_FRAME = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+        const API_BASE = (() => {
+            const api = new URLSearchParams(window.location.search).get('api');
+            if (api) return api.replace(/\/$/, '');
+            if (window.location.port === BACKEND_PORT) return window.location.origin;
+            if (window.location.protocol === 'file:') return `http://127.0.0.1:${BACKEND_PORT}`;
+            return `${window.location.protocol}//${window.location.hostname}:${BACKEND_PORT}`;
+        })();
         let stream = null;
         let isMonitoring = false;
+        let isAnalyzing = false;
         let monitorInterval = null;
+        const ANALYZE_INTERVAL_MS = 200;
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const processedVideo = document.getElementById('processedVideo');
+        const processedLabel = document.getElementById('processedLabel');
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -248,19 +296,51 @@
         const alertBox = document.getElementById('alertBox');
         const alertMessage = document.getElementById('alertMessage');
         const alertSound = document.getElementById('alertSound');
+        processedVideo.onerror = () => {
+            processedVideo.src = EMPTY_FRAME;
+            processedLabel.textContent = '处理后画面解码失败';
+            processedLabel.className = 'video-label error';
+        };
         async function startCamera() {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { width: 640, height: 480 } 
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 640, height: 480 }
                 });
                 video.srcObject = stream;
                 canvas.width = 640;
                 canvas.height = 480;
+                stream.getVideoTracks().forEach(track => {
+                    track.onended = () => stopMonitoring('摄像头已断开');
+                });
+                await video.play();
+                await waitForVideoFrame();
                 return true;
             } catch (err) {
                 alert('无法访问摄像头: ' + err.message);
                 return false;
             }
+        }
+        function waitForVideoFrame() {
+            if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && video.videoWidth > 0) {
+                return Promise.resolve();
+            }
+            return new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    cleanup();
+                    reject(new Error('摄像头画面加载超时'));
+                }, 5000);
+                function cleanup() {
+                    clearTimeout(timeout);
+                    video.removeEventListener('loadeddata', onReady);
+                    video.removeEventListener('playing', onReady);
+                }
+                function onReady() {
+                    cleanup();
+                    resolve();
+                }
+                video.addEventListener('loadeddata', onReady, { once: true });
+                video.addEventListener('playing', onReady, { once: true });
+            });
         }
         function stopCamera() {
             if (stream) {
@@ -270,13 +350,17 @@
             }
         }
         function captureFrame() {
+            if (video.videoWidth === 0 || video.videoHeight === 0) {
+                throw new Error('摄像头暂未输出画面');
+            }
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             return canvas.toDataURL('image/jpeg', 0.8);
         }
         async function analyzeFrame() {
-            if (!isMonitoring) return;
-            const frameData = captureFrame();
+            if (!isMonitoring || isAnalyzing || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+            isAnalyzing = true;
             try {
+                const frameData = captureFrame();
                 const response = await fetch(`${API_BASE}/api/analyze`, {
                     method: 'POST',
                     headers: {
@@ -284,17 +368,57 @@
                     },
                     body: JSON.stringify({ frame: frameData })
                 });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
                 const data = await response.json();
                 if (data.success) {
                     updateStats(data);
                     handleAlerts(data.alerts);
                     if (data.processed_frame) {
                         processedVideo.src = data.processed_frame;
+                        processedLabel.textContent = '处理后画面';
+                        processedLabel.className = 'video-label';
+                    } else {
+                        processedLabel.textContent = '处理后画面未返回';
+                        processedLabel.className = 'video-label error';
                     }
+                } else {
+                    throw new Error(data.error || '分析失败');
                 }
             } catch (err) {
                 console.error('分析错误:', err);
+                processedLabel.textContent = `处理后画面加载失败：${err.message}`;
+                processedLabel.className = 'video-label error';
+            } finally {
+                isAnalyzing = false;
             }
+        }
+        function startMonitoring() {
+            isMonitoring = true;
+            analyzeFrame();
+            monitorInterval = setInterval(analyzeFrame, ANALYZE_INTERVAL_MS);
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            status.textContent = '系统运行中';
+            status.className = 'status running';
+        }
+        function stopMonitoring(message = '系统已停止') {
+            isMonitoring = false;
+            isAnalyzing = false;
+            if (monitorInterval) {
+                clearInterval(monitorInterval);
+                monitorInterval = null;
+            }
+            stopCamera();
+            processedVideo.src = EMPTY_FRAME;
+            processedLabel.textContent = '处理后画面';
+            processedLabel.className = 'video-label';
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            status.textContent = message;
+            status.className = 'status stopped';
+            loadLogs();
         }
         function updateStats(data) {
             document.getElementById('blinkCount').textContent = data.blink_count || 0;
@@ -401,26 +525,11 @@
         }
         startBtn.addEventListener('click', async () => {
             if (await startCamera()) {
-                isMonitoring = true;
-                monitorInterval = setInterval(analyzeFrame, 150);
-                startBtn.disabled = true;
-                stopBtn.disabled = false;
-                status.textContent = '系统运行中';
-                status.className = 'status running';
+                startMonitoring();
             }
         });
         stopBtn.addEventListener('click', () => {
-            isMonitoring = false;
-            if (monitorInterval) {
-                clearInterval(monitorInterval);
-                monitorInterval = null;
-            }
-            stopCamera();
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
-            status.textContent = '系统已停止';
-            status.className = 'status stopped';
-            loadLogs();
+            stopMonitoring();
         });
         resetBtn.addEventListener('click', async () => {
             if (confirm('确定要重置所有数据吗?')) {
@@ -443,4 +552,5 @@
         setInterval(loadLogs, 10000);
     </script>
 </body>
+
 </html>
